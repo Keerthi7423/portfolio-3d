@@ -3,22 +3,46 @@ const cors = require('cors');
 require('dotenv').config();
 const connectDB = require('./config/db');
 
-//Connect to Database
+// Import Route Handlers
+const projectRoutes = require('./routes/projectRoutes');
+const skillRoutes = require('./routes/skillRoutes');
+const messageRoutes = require('./routes/messageRoutes');
+
+// Connect to Database
 connectDB();
 
 const app = express();
 
-//Middleware
+// Core Middleware
 app.use(cors());
 app.use(express.json());
 
-//Test Route
-app.get('/', (req,res) => {
-    res.send('API is running...');
+// Base Route
+app.get('/', (req, res) => {
+  res.json({ message: '3D Portfolio API is running smoothly...' });
+});
+
+// API Routes
+app.use('/api/projects', projectRoutes);
+app.use('/api/skills', skillRoutes);
+app.use('/api/messages', messageRoutes);
+
+// 404 Route Handler
+app.use((req, res, next) => {
+  res.status(404).json({ message: `Route ${req.originalUrl} not found` });
+});
+
+// Global Error Handler Middleware
+app.use((err, req, res, next) => {
+  console.error('Unhandled Error:', err.stack);
+  res.status(err.statusCode || 500).json({
+    success: false,
+    message: err.message || 'Internal Server Error',
+  });
 });
 
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-})
+  console.log(`Server is running on port ${PORT}`);
+});
