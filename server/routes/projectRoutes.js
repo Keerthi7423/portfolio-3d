@@ -7,16 +7,17 @@ const {
   updateProject,
   deleteProject,
 } = require('../controllers/projectController');
+const { protect } = require('../middleware/authMiddleware');
 
 // Routes for /api/projects
 router.route('/')
-  .get(getProjects)
-  .post(createProject);
+  .get(getProjects)                   // Public: anyone can view
+  .post(protect, createProject);       // Protected: Admin only
 
 // Routes for /api/projects/:id
 router.route('/:id')
-  .get(getProjectById)
-  .put(updateProject)
-  .delete(deleteProject);
+  .get(getProjectById)                // Public: anyone can view
+  .put(protect, updateProject)         // Protected: Admin only
+  .delete(protect, deleteProject);     // Protected: Admin only
 
 module.exports = router;
