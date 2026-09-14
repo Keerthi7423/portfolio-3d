@@ -8,7 +8,7 @@ const {
 const { protect } = require('../middleware/authMiddleware');
 
 // Public Auth Endpoints
-router.post('/register', registerAdmin);
+// router.post('/register', registerAdmin);
 router.post('/login', loginAdmin);
 
 // Protected Auth Endpoint (Requires Bearer token)
